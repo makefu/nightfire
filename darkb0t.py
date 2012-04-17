@@ -10,8 +10,8 @@ from sgmllib import SGMLParser
 import random
 from xml.dom.minidom import parse, parseString
 from time import sleep
-print 
-config = json.load(open("config.json"))
+try: config = json.load(open("config.json")) 
+except: config = {}
 
 try:
   set
