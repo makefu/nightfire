@@ -7,9 +7,10 @@
 
 import sys, subprocess, socket, string, httplib, urlparse, urllib, re, urllib2, random, threading, cookielib, json
 from sgmllib import SGMLParser
+import random
 from xml.dom.minidom import parse, parseString
 from time import sleep
-
+print 
 config = json.load(open("config.json"))
 
 try:
@@ -40,17 +41,13 @@ def cmd():
   print "[+] !dork    : Using dork for collecting links and then check for SQLi"
 
 if sys.platform == 'linux' or sys.platform == 'linux2':
-  subprocess.call('clear', shell=True)
+  #subprocess.call('clear', shell=True)
   logo()
   cmd()
 else:
-  subprocess.call('cls', shell=True)
+  #subprocess.call('cls', shell=True)
   logo()
   cmd()
-if len(sys.argv) != 5:
-  print "[!] Usage: python darkb0t.py <host> <port> <nick> <channel>"
-  print "[!] Exiting, thx for using script"
-  sys.exit(1)
   
 subdomains = ['adm','admin','admins','agent','aix','alerts','av','antivirus','app','apps','appserver','archive','as400','auto','backup','banking','bbdd','bbs','bea','beta','blog','catalog','cgi','channel','channels','chat','cisco','client','clients','club','cluster','clusters','code','commerce','community','compaq','conole','consumer','contact','contracts','corporate','ceo','cso','cust','customer','cpanel','data','bd','db2','default','demo','design','desktop','dev','develop','developer','device','dial','digital','dir','directory','disc','discovery','disk','dns','dns1','dns2','dns3','docs','documents','domain','domains','dominoweb','download','downloads','ecommerce','e-commerce','edi','edu','education','email','enable','engine','engineer','enterprise','error','event','events','example','exchange','extern','external','extranet','fax','field','finance','firewall','forum','forums','fsp','ftp','ftp2','fw','fw1','gallery','galleries','games','gateway','gopher','guest','gw','hello','helloworld','help','helpdesk','helponline','hp','ibm','ibmdb','ids','ILMI','images','imap','imap4','img','imgs','info','intern','internal','intranet','invalid','iphone','ipsec','irc','ircserver','jobs','ldap','link','linux','lists','listserver','local','localhost','log','logs','login','lotus','mail','mailboxes','mailhost','management','manage','manager','map','maps','marketing','device','media','member','members','messenger','mngt','mobile','monitor','multimedia','music','my','names','net','netdata','netstats','network','news','nms','nntp','ns','ns1','ns2','ns3','ntp','online','openview','oracle','outlook','page','pages','partner','partners','pda','personal','ph','pictures','pix','pop','pop3','portal','press','print','printer','private','project','projects','proxy','public','ra','radio','raptor','ras','read','register','remote','report','reports','root','router','rwhois','sac','schedules','scotty','search','secret','secure','security','seri','serv','serv2','server','service','services','shop','shopping','site','sms','smtp','smtphost','snmp','snmpd','snort','solaris','solutions','support','source','sql','ssl','stats','store','stream','streaming','sun','support','switch','sysback','system','tech','terminal','test','testing','testing123','time','tivoli','training','transfers','uddi','update','upload','uploads','video','vpn','w1','w2','w3','wais','wap','web','webdocs','weblib','weblogic','webmail','webserver','webservices','websphere','whois','wireless','work','world','write','ws','ws1','ws2','ws3','www1','www2','www3']
 
@@ -107,15 +104,16 @@ socket.setdefaulttimeout(timeout)
 threads = []
 urls = []
 
-host = sys.argv[1]
-port = int(sys.argv[2])
-nick = sys.argv[3]
-chan = sys.argv[4]
+host = sys.argv[1] if len(sys.argv) >1  else config.get("host","gibson.freenode.net")
+port = int(sys.argv[2]) if len(sys.argv) >2 else config.get("port",6667)
+nick = sys.argv[3] if len(sys.argv) >3 else config.get("nick","darkb0t" +str(random.randint(23,31337)) )
+chan = sys.argv[4] if len(sys.argv) >4 else config.get("chan","#krebscorpse")
 
 def revip():
   sites = [target]
   #appid = '01CDBCA91C590493EE4E91FAF83E5239FEF6ADFD' #thanks for the bing api key
-  appid = config["appid"]
+  # be prepared for "" appid
+  appid = config["appid"] if config.get("appid","") else "01CDBCA91C590493EE4E91FAF83E5239FEF6ADFD" 
   ip = socket.gethostbyname(target)
   offset = 50
   num = 1
